@@ -1,0 +1,50 @@
+---
+- hosts: all
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+
+  - name: 创建工作目录
+    file: dest=/opt/etcd/{{item}} state=directory
+    with_items:
+      - bin
+      - cfg
+      - ssl
+
+  - name: 分发并解压二进制包
+    unarchive: src=files/etcd-v3.3.10-linux-amd64.tar.gz dest=/tmp
+
+  - name: 移动二进制包
+    shell: mv /tmp/etcd-v3.3.10-linux-amd64/{etcd,etcdctl} /opt/etcd/bin
+
+  - name: 分发证书
+    copy: src=tls/cert/{{item}} dest=/opt/etcd/ssl
+    with_items:
+      - ca.pem
+      - server.pem
+      - server-key.pem
+
+  - name: 分发配置文件
+    template: src=files/etcd.conf.j2 dest=/opt/etcd/cfg/etcd.conf
+
+  - name: 分发service文件
+    template: src=files/etcd.service.j2 dest=/usr/lib/systemd/system/etcd.service
+
+  - name: 启动并设置开机启动
+    systemd: name=etcd state=restarted enabled=yes 
+
+  - name: 检查集群状态
+    shell: |
+      {{ etcd_work_dir }}/bin/etcdctl \
+      --ca-file={{ etcd_work_dir }}/ssl/ca.pem \
+      --cert-file={{ etcd_work_dir }}/ssl/server.pem \
+      --key-file={{ etcd_work_dir }}/ssl/server-key.pem \
+      --endpoints={% for host in groups['etcd'] %}https://{{ hostvars[host].inventory_hostname }}:2379{% if not loop.last %},{% endif %}{% endfor %} \
+      cluster-health
+    register: result
+    tags: result
+  - debug: var=result.stdout_lines
+    tags: print
+
+
