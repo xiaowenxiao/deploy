@@ -6,9 +6,9 @@
 vim /etc/ansible/hosts
 
 [etcd]
-172.20.10.5 etcd_name=etcd-1
-172.20.10.6 etcd_name=etcd-2
-172.20.10.7 etcd_name=etcd-3
+172.20.xx.xx etcd_name=etcd-1
+172.20.xx.xx etcd_name=etcd-2
+172.20.xx.xx etcd_name=etcd-3
 
 [etcd:vars]
 etcd_work_dir=/opt/etcd
