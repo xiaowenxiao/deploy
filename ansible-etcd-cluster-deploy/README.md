@@ -4,11 +4,11 @@
 
 ```
 vim /etc/ansible/hosts
-
+# x.x.x.x 替换成对应的的ip地址
 [etcd]
-172.20.xx.xx etcd_name=etcd-1
-172.20.xx.xx etcd_name=etcd-2
-172.20.xx.xx etcd_name=etcd-3
+x.x.x.x etcd_name=etcd-1
+x.x.x.x etcd_name=etcd-2
+x.x.x.x etcd_name=etcd-3
 
 [etcd:vars]
 etcd_work_dir=/opt/etcd
