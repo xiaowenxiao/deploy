@@ -1,0 +1,10 @@
+[master]
+172.20.10.5
+
+[slave]
+172.20.10.6
+172.20.10.7
+
+[all:vars]
+master_ip="172.20.10.5"
+password="2T3usda4Tv3MdUFl"

@@ -1,0 +1,34 @@
+---
+- hosts: master
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+
+  - name: 分发并解压
+    unarchive: src=files/mysql.zip dest=/tmp
+
+  - name: 分发配置文件
+    template: src=init-0.sh dest=/tmp/mysql/
+
+  - name: 执行安装脚本
+    shell: |
+      cd /tmp/mysql/ && \
+      bash install-master.sh
+
+- hosts: slave
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+
+  - name: 分发并解压
+    unarchive: src=files/mysql.zip dest=/tmp
+
+  - name: 分发配置文件
+    template: src=init-0.sh dest=/tmp/mysql/
+
+  - name: 执行安装脚本
+    shell: |
+      cd /tmp/mysql/ && \
+      bash install-slave.sh
