@@ -8,13 +8,6 @@
 ├── install1.sh
 ├── install2.sh
 ├── install3.sh
-├── java-1.8.0-openjdk
-│   ├── java-1.8.0-openjdk-1.8.0.242.b08-0.el7_7.i686.rpm
-│   ├── java-1.8.0-openjdk-1.8.0.242.b08-0.el7_7.x86_64.rpm
-│   ├── java-1.8.0-openjdk-devel-1.8.0.242.b08-0.el7_7.i686.rpm
-│   ├── java-1.8.0-openjdk-devel-1.8.0.242.b08-0.el7_7.x86_64.rpm
-│   ├── java-1.8.0-openjdk-headless-1.8.0.242.b08-0.el7_7.i686.rpm
-│   └── java-1.8.0-openjdk-headless-1.8.0.242.b08-0.el7_7.x86_64.rpm
 ├── pkg
 │   ├── apache-zookeeper-3.5.5-bin.tar.gz
 │   └── kafka_2.11-2.3.1.tgz
