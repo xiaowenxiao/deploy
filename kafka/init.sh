@@ -16,8 +16,8 @@ SELINUX=disabled
 EOF
 
 # 安装JDK
-yum install java-1.8.0-openjdk
-yum install java-1.8.0-openjdk-devel
+yum install -y java-1.8.0-openjdk
+yum install -y java-1.8.0-openjdk-devel
 
 cat >> /etc/profile <<EOF
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.242.b08-0.el7_7.x86_64

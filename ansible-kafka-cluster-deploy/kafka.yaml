@@ -1,0 +1,104 @@
+
+---
+- hosts: server_1
+  remote_user: root
+  gather_facts: no
+  vars:
+    work_dir: /data
+
+  tasks:
+  - name: 创建工作目录
+    file:
+      path: "{{ work_dir }}"
+      state: directory
+      mode: '0755'
+    tags: test
+
+  - name: 分发并解压
+    unarchive: src=files/kafka.zip dest={{ work_dir }}
+
+  - name: 分发配置文件
+    template: src=init0.sh dest={{ work_dir }}/kafka/
+
+  - name: 执行安装脚本
+    shell: |
+      cd {{ work_dir }}/kafka/ && \
+      bash install1.sh
+
+- hosts: server_2
+  remote_user: root
+  gather_facts: no
+  vars:
+    work_dir: /data
+
+  tasks:
+  - name: 创建工作目录
+    file:
+      path: "{{ work_dir }}"
+      state: directory
+      mode: '0755'
+
+  - name: 分发并解压
+    unarchive: src=files/kafka.zip dest={{ work_dir }}
+
+  - name: 分发配置文件
+    template: src=init0.sh dest={{ work_dir }}/kafka/
+
+  - name: 执行安装脚本
+    shell: |
+      cd {{ work_dir }}/kafka/ && \
+      bash install2.sh
+
+- hosts: server_3
+  remote_user: root
+  gather_facts: no
+  vars:
+    work_dir: /data
+
+  tasks:
+
+  - name: 创建工作目录
+    file:
+      path: "{{ work_dir }}"
+      state: directory
+      mode: '0755'
+
+  - name: 分发并解压
+    unarchive: src=files/kafka.zip dest={{ work_dir }}
+
+  - name: 分发配置文件
+    template: src=init0.sh dest={{ work_dir }}/kafka/
+
+  - name: 执行安装脚本
+    shell: |
+      cd {{ work_dir }}/kafka/ && \
+      bash install3.sh
+
+- hosts: server_1
+  remote_user: root
+  gather_facts: no
+  vars:
+    work_dir: /data
+
+  tasks:
+
+  - name: 关闭进程
+    shell: |
+      cd {{ work_dir }}/kafka/zookeeper/bin&&./zkServer.sh stop && \
+      cd {{ work_dir }}/kafka/kafka/bin&&./kafka-server-stop.sh
+    ignore_errors: True
+    tags: tag
+
+
+  - name: 启动zookeeper、kafka服务
+    shell: |
+      cd {{ work_dir }}/kafka/zookeeper/bin&&./zkServer.sh start && \
+      cd {{ work_dir }}/kafka/kafka/bin&&./kafka-server-start.sh -daemon ../config/server.properties
+    tags: start
+
+  - name: 查看kafka、zookeeper进程
+    shell: |
+      ps -fe | grep kafka | cat && \
+      ps -fe | grep zookeeper | cat
+    register: status
+  - debug: var=status.stdout_lines

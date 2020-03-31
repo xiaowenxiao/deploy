@@ -53,11 +53,13 @@ cd ${install_path}/kafka/bin&&./kafka-server-stop.sh
 
 # 创建发布者
 ./kafka-console-producer.sh --broker-list 172.20.10.5:9082 --topic test
+
 # 创建消费者
 ./kafka-console-consumer.sh --bootstrap-server 172.20.10.6:9082 --topic test --from-beginning
-./kafka-console-consumer.sh --bootstrap-server 172.20.10.7:9082 --topic test --from-beginning
+
 # 查看 topic
 ./kafka-topics.sh --list --zookeeper localhost:9081
+
 # 查看 topic 状态
 ./kafka-topics.sh --describe --zookeeper localhost:9081 --topic test
 ```

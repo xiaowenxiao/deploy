@@ -1,0 +1,16 @@
+[server_1]
+172.20.10.5 word_dir=/data
+
+[server_2]
+172.20.10.6 word_dir=/data
+
+[server_3]
+172.20.10.7 word_dir=/data
+
+[all:vars]
+server_1=172.20.10.5
+server_2=172.20.10.6
+server_3=172.20.10.7
+
+[server_1:vars]
+word_dir=/data
