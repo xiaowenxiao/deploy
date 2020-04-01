@@ -3,8 +3,6 @@
 - hosts: server_1
   remote_user: root
   gather_facts: no
-  vars:
-    work_dir: /data
 
   tasks:
   - name: 创建工作目录
@@ -28,8 +26,6 @@
 - hosts: server_2
   remote_user: root
   gather_facts: no
-  vars:
-    work_dir: /data
 
   tasks:
   - name: 创建工作目录
@@ -52,11 +48,8 @@
 - hosts: server_3
   remote_user: root
   gather_facts: no
-  vars:
-    work_dir: /data
 
   tasks:
-
   - name: 创建工作目录
     file:
       path: "{{ work_dir }}"
@@ -77,18 +70,14 @@
 - hosts: server_1
   remote_user: root
   gather_facts: no
-  vars:
-    work_dir: /data
 
   tasks:
-
   - name: 关闭进程
     shell: |
       cd {{ work_dir }}/kafka/zookeeper/bin&&./zkServer.sh stop && \
       cd {{ work_dir }}/kafka/kafka/bin&&./kafka-server-stop.sh
     ignore_errors: True
     tags: tag
-
 
   - name: 启动zookeeper、kafka服务
     shell: |
