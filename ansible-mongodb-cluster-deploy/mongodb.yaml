@@ -1,0 +1,117 @@
+---
+- hosts: primary
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+
+  - name: 分发并解压
+    unarchive: src=files/pkg.zip dest={{ ins_dir }}
+
+  - name: 分发配置文件
+    template: src={{ item }} dest=/etc/mongod.conf
+    with_items:
+      - files/primary_mongod.conf
+
+  - name: 分发安装脚本
+    template: src=primary_install.sh  dest={{ ins_dir }}
+
+  - name: 创建mongodb的存储目录
+    file:
+      path: "{{ item }}"
+      state: directory
+      mode: '0755'
+    with_items:
+    - "{{ mongopath }}"
+    - "{{ mongoDataPath }}"
+
+  - name: 执行安装
+    shell: |
+      bash {{ ins_dir }}/primary_install.sh
+    register: status
+  - debug: var=status.stdout_lines
+
+    
+- hosts: secondary
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+
+  - name: 分发并解压
+    unarchive: src=files/pkg.zip dest={{ ins_dir }}
+
+  - name: 分发配置文件
+    template: src={{ item }} dest=/etc/mongod.conf
+    with_items:
+      - files/secondary_mongod.conf
+
+  - name: 分发安装脚本
+    template: src=secondary_install.sh  dest={{ ins_dir }}
+
+  - name: 创建mongodb的存储目录
+    file:
+      path: "{{ item }}"
+      state: directory
+      mode: '0755'
+    with_items:
+    - "{{ mongopath }}"
+    - "{{ mongoDataPath }}"
+
+  - name: 执行安装
+    shell: |
+      bash {{ ins_dir }}/secondary_install.sh
+    register: status
+  - debug: var=status.stdout_lines
+
+      
+- hosts: arbiter
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+
+  - name: 分发并解压
+    unarchive: src=files/pkg.zip dest={{ ins_dir }}
+
+  - name: 分发配置文件
+    template: src={{ item }} dest=/etc/mongod.conf
+    with_items:
+      - files/arbiter_mongod.conf
+
+  - name: 分发安装脚本
+    template: src=arbiter_install.sh  dest={{ ins_dir }}
+
+  - name: 创建mongodb的存储目录
+    file:
+      path: "{{ item }}"
+      state: directory
+      mode: '0755'
+    with_items:
+    - "{{ mongopath }}"
+    - "{{ mongoDataPath }}"
+
+  - name: 执行安装
+    shell: |
+      bash {{ ins_dir }}/arbiter_install.sh
+    register: status
+  - debug: var=status.stdout_lines
+      
+- hosts: primary
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+
+  - name: 分发安装脚本
+    template: src=start.sh  dest={{ ins_dir }}
+
+  - name: 启动集群
+    shell: | 
+      bash {{ ins_dir }}/start.sh 
+
+  - name: 集群状态检查
+    shell: |
+      mongo {{ primary }}:27017  --eval "rs.status();"
+    register: status
+  - debug: var=status.stdout_lines
