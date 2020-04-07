@@ -16,11 +16,11 @@
     unarchive: src=files/kafka.zip dest={{ work_dir }}
 
   - name: 分发配置文件
-    template: src=init0.sh dest={{ work_dir }}/kafka/
+    template: src=init0.sh dest={{ work_dir }}/
 
   - name: 执行安装脚本
     shell: |
-      cd {{ work_dir }}/kafka/ && \
+      cd {{ work_dir }}/ && \
       bash install1.sh
 
 - hosts: server_2
@@ -38,11 +38,11 @@
     unarchive: src=files/kafka.zip dest={{ work_dir }}
 
   - name: 分发配置文件
-    template: src=init0.sh dest={{ work_dir }}/kafka/
+    template: src=init0.sh dest={{ work_dir }}/
 
   - name: 执行安装脚本
     shell: |
-      cd {{ work_dir }}/kafka/ && \
+      cd {{ work_dir }}/ && \
       bash install2.sh
 
 - hosts: server_3
@@ -60,11 +60,11 @@
     unarchive: src=files/kafka.zip dest={{ work_dir }}
 
   - name: 分发配置文件
-    template: src=init0.sh dest={{ work_dir }}/kafka/
+    template: src=init0.sh dest={{ work_dir }}/
 
   - name: 执行安装脚本
     shell: |
-      cd {{ work_dir }}/kafka/ && \
+      cd {{ work_dir }}/ && \
       bash install3.sh
 
 - hosts: server_1
@@ -74,14 +74,14 @@
   tasks:
   - name: 关闭进程
     shell: |
-      cd {{ work_dir }}/kafka/zookeeper/bin&&./zkServer.sh stop && \
-      cd {{ work_dir }}/kafka/kafka/bin&&./kafka-server-stop.sh || /bin/true
+      cd {{ work_dir }}/zookeeper/bin&&./zkServer.sh stop && \
+      cd {{ work_dir }}/kafka/bin&&./kafka-server-stop.sh || /bin/true
     tags: tag
 
   - name: 启动zookeeper、kafka服务
     shell: |
-      cd {{ work_dir }}/kafka/zookeeper/bin&&./zkServer.sh start && \
-      cd {{ work_dir }}/kafka/kafka/bin&&./kafka-server-start.sh -daemon ../config/server.properties
+      cd {{ work_dir }}/zookeeper/bin&&./zkServer.sh start && \
+      cd {{ work_dir }}/kafka/bin&&./kafka-server-start.sh -daemon ../config/server.properties
     tags: start
 
   - name: 查看kafka、zookeeper进程
@@ -90,3 +90,52 @@
       ps -fe | grep zookeeper | cat
     register: status
   - debug: var=status.stdout_lines
+
+- hosts: server_2
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+  - name: 关闭进程
+    shell: |
+      cd {{ work_dir }}/zookeeper/bin&&./zkServer.sh stop && \
+      cd {{ work_dir }}/kafka/bin&&./kafka-server-stop.sh || /bin/true
+    tags: tag
+
+  - name: 启动zookeeper、kafka服务
+    shell: |
+      cd {{ work_dir }}/zookeeper/bin&&./zkServer.sh start && \
+      cd {{ work_dir }}/kafka/bin&&./kafka-server-start.sh -daemon ../config/server.properties
+    tags: start
+
+  - name: 查看kafka、zookeeper进程
+    shell: |
+      ps -fe | grep kafka | cat && \
+      ps -fe | grep zookeeper | cat
+    register: status
+  - debug: var=status.stdout_lines
+
+- hosts: server_3
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+  - name: 关闭进程
+    shell: |
+      cd {{ work_dir }}/zookeeper/bin&&./zkServer.sh stop && \
+      cd {{ work_dir }}/kafka/bin&&./kafka-server-stop.sh || /bin/true
+    tags: tag
+
+  - name: 启动zookeeper、kafka服务
+    shell: |
+      cd {{ work_dir }}/zookeeper/bin&&./zkServer.sh start && \
+      cd {{ work_dir }}/kafka/bin&&./kafka-server-start.sh -daemon ../config/server.properties
+    tags: start
+
+  - name: 查看kafka、zookeeper进程
+    shell: |
+      ps -fe | grep kafka | cat && \
+      ps -fe | grep zookeeper | cat
+    register: status
+  - debug: var=status.stdout_lines
+
