@@ -49,7 +49,7 @@ vim /usr/lib/systemd/system/mongod.service
 ```
 [Unit]
  
-Description=mongodb 
+Description=mongod 
 After=network.target remote-fs.target nss-lookup.target
  
 [Service]
