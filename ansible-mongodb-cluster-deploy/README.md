@@ -64,7 +64,12 @@ WantedBy=multi-user.target
 ```
 chmod 755 /usr/lib/systemd/system/mongodb.service
 
+启动
 systemctl start mongodb
+
+停止
 systemctl stop mongodb
+
+开机启动
 systemctl enable mongodb
 
