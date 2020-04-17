@@ -39,11 +39,32 @@ mongoDataPath='/data/mongodb/data'
 mongopath='/data/mongodb'
 ```
 
-
-
 执行安装
-
 ```
 ansible-playbook -i hosts mongodb.yaml -k
 ```
+
+## 配置systemd
+vim /usr/lib/systemd/system/mongodb.service 
+```
+[Unit]
+ 
+Description=mongodb 
+After=network.target remote-fs.target nss-lookup.target
+ 
+[Service]
+Type=forking
+ExecStart=/usr/bin/mongod -f /etc/mongod.conf
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/usr/bin/mongod --shutdown -f /etc/mongod.conf
+PrivateTmp=true
+  
+[Install]
+WantedBy=multi-user.target
+```
+chmod 755 /usr/lib/systemd/system/mongodb.service
+
+systemctl start mongodb
+systemctl stop mongodb
+systemctl enable mongodb
 
