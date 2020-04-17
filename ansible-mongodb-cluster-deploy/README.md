@@ -45,7 +45,7 @@ ansible-playbook -i hosts mongodb.yaml -k
 ```
 
 ## 配置systemd
-vim /usr/lib/systemd/system/mongodb.service 
+vim /usr/lib/systemd/system/mongod.service 
 ```
 [Unit]
  
@@ -58,6 +58,7 @@ ExecStart=/usr/bin/mongod -f /etc/mongod.conf
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/usr/bin/mongod --shutdown -f /etc/mongod.conf
 PrivateTmp=true
+user=root
   
 [Install]
 WantedBy=multi-user.target
