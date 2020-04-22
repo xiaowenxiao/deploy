@@ -63,14 +63,14 @@ user=root
 [Install]
 WantedBy=multi-user.target
 ```
-chmod 755 /usr/lib/systemd/system/mongodb.service
+chmod 755 /usr/lib/systemd/system/mongod.service
 
 启动
-systemctl start mongodb
+systemctl start mongod
 
 停止
-systemctl stop mongodb
+systemctl stop mongod
 
 开机启动
-systemctl enable mongodb
+systemctl enable mongod
 
