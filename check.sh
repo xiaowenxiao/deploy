@@ -15,17 +15,19 @@ EOF
     exit 1
 }
 
-if [ -z $1 ]; then
+if [[ $1 != "-p" && $1 != "-h" ]]
+then
     usage
 fi
 
-while getopts 'p:h:?' OPT; do
+while getopts 'p:h' OPT; do
     case $OPT in
         p) PASSWORD="$OPTARG";;
         h) usage;;
         ?) usage;;
     esac
 done
+
 
 pre(){
 	systemctl status docker >/dev/null 2>&1 
@@ -90,4 +92,3 @@ pre
 init_check
 service_check
 [[ $(docker node ls | grep Leader | awk '{print $3}') == $(hostname) ]] && copy_script	
-
