@@ -1,9 +1,7 @@
 #! /bin/bash
 
 # This is 初始化及服务检查 shell script.
-# 使用到sshpass,离线需将sshpass rpm包放置跟脚本同级目录下.
 # 当前脚本需在swarm leader节点执行,仅支持所有服务器密码一致的情况下使用.
-# 该脚本仅在操作系统CentOS7.6-7.9测试成功.
 # Writen by Xiaowenxiao 2021-03-10.
 
 IP=$(ip a|grep -w 'inet'|grep 'global'|sed 's/^.*inet //g'|sed 's/\/[0-9][0-9].*$//g'|head -n 1)
